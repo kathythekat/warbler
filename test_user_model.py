@@ -15,7 +15,7 @@ from models import db, User, Message, Follows
 # before we import our app, since that will have already
 # connected to the database
 
-os.environ['DATABASE_URL'] = "postgresql:///warbler-test"
+os.environ['DATABASE_URL'] = "postgresql:///warbler_test"
 
 # Now we can import app
 
@@ -27,6 +27,11 @@ from app import app
 
 db.create_all()
 
+# USER_DATA = {
+#     "username": "testuser",
+#     "password": "password",
+#     "email": "user@gmail.com",
+# }
 
 class UserModelTestCase(TestCase):
     """Test views for messages."""
@@ -38,20 +43,59 @@ class UserModelTestCase(TestCase):
         Message.query.delete()
         Follows.query.delete()
 
+        u1 = User(
+            email="test@test.com",
+            username="testuser1",
+            password="HASHED_PASSWORD"
+        )
+        u2 = User(
+            email="test@gmail.com",
+            username="testuser2",
+            password="HASHED_PASSWORD"
+        )
+
+        db.session.add(u1)
+        db.session.add(u2)
+        db.session.commit()
+
         self.client = app.test_client()
+        self.u1 = User.query.all()[0]
+        self.u2 = User.query.all()[1]
+    
 
     def test_user_model(self):
         """Does basic model work?"""
 
-        u = User(
-            email="test@test.com",
-            username="testuser",
-            password="HASHED_PASSWORD"
-        )
+        # User should have no messages & no followers
+        self.assertEqual(len(self.u1.messages), 0)
+        self.assertEqual(len(self.u1.followers), 0)
 
-        db.session.add(u)
+    def test__repr__(self):
+        """Does the repr method work as expected?"""
+
+        response = self.u1.__repr__()
+
+        self.assertEqual(response, f"<User #{self.u1.id}: {self.u1.username}, {self.u1.email}>")
+    
+
+    def test_is_following(self):
+        """Is this user following other user?"""
+      
+        follow = Follows(user_being_followed_id=self.u2.id, user_following_id=self.u1.id)
+        db.session.add(follow)
         db.session.commit()
 
-        # User should have no messages & no followers
-        self.assertEqual(len(u.messages), 0)
-        self.assertEqual(len(u.followers), 0)
+        self.assertEqual(self.u1.is_following(self.u2), True)
+        self.assertEqual(self.u2.is_following(self.u1), False)
+    
+    
+    def test_is_followed_by(self):
+        """Is this user followed by other user?"""
+        follow = Follows(user_being_followed_id=self.u2.id, user_following_id=self.u1.id)
+        db.session.add(follow)
+        db.session.commit()
+
+        self.assertEqual(self.u2.is_followed_by(self.u1), True)
+        self.assertEqual(self.u1.is_followed_by(self.u2), False)
+
+
