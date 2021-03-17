@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
-from forms import UserAddForm, LoginForm, MessageForm
+from forms import UserAddForm, LoginForm, MessageForm, UserEditForm
 from models import db, connect_db, User, Message
 
 CURR_USER_KEY = "curr_user"
@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 toolbar = DebugToolbarExtension(app)
 
@@ -205,8 +205,28 @@ def stop_following(follow_id):
 @app.route('/users/profile', methods=["GET", "POST"])
 def profile():
     """Update profile for current user."""
+    user = User.query.get_or_404(session[CURR_USER_KEY])
+    form = UserEditForm(obj=user)
 
-    # IMPLEMENT THIS
+    if form.validate_on_submit():
+        user = User.authenticate(user.username, form.password.data)
+        if not user:
+            flash("Invalid username/password")
+            return redirect('/')
+
+        user. username = form.username.data
+        user.email = form.email.data
+        user.image_url = form.image_url.data or None
+        user.header_image_url = form.header_image_url.data or None
+        user.bio = form.bio.data
+
+        db.session.commit()
+
+        return redirect(f"/users/{user.id}")
+
+    return render_template("/users/edit.html", form=form)
+
+
 
 
 @app.route('/users/delete', methods=["POST"])
