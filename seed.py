@@ -1,7 +1,7 @@
 """Seed database with sample data from CSV Files."""
 
 from csv import DictReader
-from app import db
+from app import db, connect_db
 from models import User, Message, Follows
 
 db.drop_all()
