@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block searchbox %}
+  {# don't show this on anon homepage #}
+{% endblock %}
+
+{% block content %}
+  <div class="home-hero">
+    <h1>What's Happening?</h1>
+    <h4>New to Warbler?</h4>
+    <p>Sign up now to get your own personalized timeline!</p>
+    <a href="/signup" class="btn btn-primary">Sign up</a>
+  </div>
+{% endblock %}

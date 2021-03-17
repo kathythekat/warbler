@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <div class="bg"></div>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <ul class="list-group no-hover" id="messages">
+        <li class="list-group-item">
+          <a href="{{ url_for('users_show', user_id=message.user.id) }}">
+            <img src="{{ message.user.image_url }}" alt="" class="timeline-image">
+          </a>
+          <div class="message-area">
+            <div class="message-heading">
+              <a href="/users/{{ message.user.id }}">@{{ message.user.username }}</a>
+              {% if g.user %}
+                {% if g.user.id == message.user.id %}
+                  <form method="POST"
+                        action="/messages/{{ message.id }}/delete">
+                    <button class="btn btn-outline-danger">Delete</button>
+                  </form>
+                {% elif g.user.is_following(message.user) %}
+                  <form method="POST"
+                        action="/users/stop-following/{{ message.user.id }}">
+                    <button class="btn btn-primary">Unfollow</button>
+                  </form>
+                {% else %}
+                  <form method="POST" action="/users/follow/{{ message.user.id }}">
+                    <button class="btn btn-outline-primary btn-sm">Follow</button>
+                  </form>
+                {% endif %}
+              {% endif %}
+            </div>
+            <p class="single-message">{{ message.text }}</p>
+            <span class="text-muted">{{ message.timestamp.strftime('%d %B %Y') }}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+{% endblock %}
