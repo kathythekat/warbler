@@ -112,12 +112,10 @@ def login():
 @app.route('/logout')
 def logout():
     """Handle logout of user."""
-    session.pop("CURR_USER_KEY", None)
+    do_logout()
     flash("Successfully logged out.")
 
     return redirect("/login")
-
-    # IMPLEMENT THIS
 
 ##############################################################################
 # General user routes:
@@ -210,19 +208,18 @@ def profile():
 
     if form.validate_on_submit():
         user = User.authenticate(user.username, form.password.data)
-        if not user:
+        if user:
+            user.username = form.username.data
+            user.email = form.email.data
+            user.image_url = form.image_url.data or None
+            user.header_image_url = form.header_image_url.data or None
+            user.bio = form.bio.data
+
+            db.session.commit()
+
+            return redirect(f"/users/{user.id}")
+        else:
             flash("Invalid username/password")
-            return redirect('/')
-
-        user.username = form.username.data
-        user.email = form.email.data
-        user.image_url = form.image_url.data or None
-        user.header_image_url = form.header_image_url.data or None
-        user.bio = form.bio.data
-
-        db.session.commit()
-
-        return redirect(f"/users/{user.id}")
 
     return render_template("/users/edit.html", form=form)
 
