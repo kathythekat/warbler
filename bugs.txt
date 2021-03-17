@@ -1,0 +1,15 @@
+app.py - postresql connection
+-'postgresql:///warbler' instead of 'postgres:///warbler'
+
+TODO:
+-cancel button on edit form
+-figure out cascade thing
+
+
+
+Front end:
+-show like button on non user tweets
+    -if message.user = g.user
+-filled in or empty like icon
+    -g.user.id not in message.users_who_like ids
+-

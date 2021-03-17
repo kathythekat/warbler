@@ -27,6 +27,25 @@ class Follows(db.Model):
     )
 
 
+class Like(db.Model):
+    """Connection of a message <-> user"""
+
+    __tablename__ = 'likes'
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        primary_key=True,
+    )
+
+    message_id = db.Column(
+        db.Integer,
+        db.ForeignKey('messages.id'),
+        primary_key=True,
+    )
+
+
+
 class User(db.Model):
     """User in the system."""
 
@@ -73,6 +92,8 @@ class User(db.Model):
     )
 
     messages = db.relationship('Message', order_by='Message.timestamp.desc()')
+
+    liked_messages = db.relationship('Message', secondary="likes")
 
     followers = db.relationship(
         "User",
@@ -171,6 +192,7 @@ class Message(db.Model):
     )
 
     user = db.relationship('User')
+    likers = db.relationship('User', secondary="likes")
 
 
 def connect_db(app):
