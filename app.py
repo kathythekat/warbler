@@ -205,7 +205,7 @@ def stop_following(follow_id):
 @app.route('/users/profile', methods=["GET", "POST"])
 def profile():
     """Update profile for current user."""
-    user = User.query.get_or_404(session[CURR_USER_KEY])
+    user = g.user
     form = UserEditForm(obj=user)
 
     if form.validate_on_submit():
@@ -214,7 +214,7 @@ def profile():
             flash("Invalid username/password")
             return redirect('/')
 
-        user. username = form.username.data
+        user.username = form.username.data
         user.email = form.email.data
         user.image_url = form.image_url.data or None
         user.header_image_url = form.header_image_url.data or None
@@ -307,8 +307,11 @@ def homepage():
     """
 
     if g.user:
+        user_id_to_display = [user.id for user in g.user.following]
+        user_id_to_display.append(g.user.id)
         messages = (Message
                     .query
+                    .filter(Message.user_id.in_(user_id_to_display))
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
