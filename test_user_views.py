@@ -89,7 +89,7 @@ class UserViewTestCase(TestCase):
             with c.session_transaction() as sess:
                 self.assertEqual(sess[CURR_USER_KEY], User.query.all()[2].id)
 
-    def test_signup_bad_username(self):
+    def test_signup_duplicate_username(self):
         with self.client as c:
             resp = c.post('/signup', data={
                     "username": 'testuser',
@@ -123,7 +123,7 @@ class UserViewTestCase(TestCase):
             self.assertEqual(len(Message.query.all()), 0)
 
 
-    def test_user_following(self):
+    def test_user_followers(self):
         with self.client as c:
             with c.session_transaction() as sess:
                 sess[CURR_USER_KEY] = self.testuser.id
@@ -135,7 +135,7 @@ class UserViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertIn('<p class="small">Following</p>', html)
     
-    def test_user_loggedout_following(self):
+    def test_user_loggedout_followers(self):
         with self.client as c:
             resp=c.get(f'/users/{self.testuser2.id}/followers', follow_redirects=True)
             
@@ -178,7 +178,7 @@ class UserViewTestCase(TestCase):
             self.assertIn("Hello, testuser!", html)
             self.assertEqual(resp.status_code, 200)
     
-    def test_user_invalid_login(self):
+    def test_user_invalid_password_login(self):
         with self.client as c:
             resp = c.post("/login", data={
                 "username": 'testuser',

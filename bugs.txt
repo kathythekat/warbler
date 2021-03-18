@@ -9,6 +9,15 @@ TODO:
 -route cancel button on edit form- currently breaks 
 -in app.py, signup- if duplicate email, should flash email already exists instead of username
 
+TODO ROUTES FOR TESTING:
+-users/follows/follow_id (post)
+-users/stop_following/follow_id (post)
+-users/edit profile (get, post)
+-deleting user account
+-show individual message
+-/messges/id/likes: liking messages/unliking message
+-show user's likes?
+
 
 CODE REVIEW THINGS WE LEARNED:
 -db.session.rollback() in setUp to remove garbage data from db session 

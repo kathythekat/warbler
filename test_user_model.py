@@ -108,7 +108,7 @@ class UserModelTestCase(TestCase):
         self.assertEqual(len(User.query.all()), 3)
         self.assertEqual(response, User.query.all()[2])
     
-    def test_invalid_signup(self):
+    def test_invalid_email_signup(self):
         """tests invalid signup data"""
         bad_response = User.signup("user3",None, "pword", "google.com")
         
@@ -118,7 +118,7 @@ class UserModelTestCase(TestCase):
             db.session.commit()
 
         db.session.rollback()
-
+        #tests for duplicate email
         bad_response2 = User.signup("testuser1", "user3@gmail.com", "pword", "google.com")
         
         db.session.add(bad_response2)
