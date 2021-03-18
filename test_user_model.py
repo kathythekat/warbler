@@ -10,6 +10,7 @@ from unittest import TestCase
 
 from models import db, User, Message, Follows
 from sqlalchemy.exc import IntegrityError
+from flask_bcrypt import Bcrypt
 
 # BEFORE we import our app, let's set an environmental variable
 # to use a different database for tests (we need to do this
@@ -27,6 +28,8 @@ from app import app
 # and create fresh new clean test data
 
 db.create_all()
+bcrypt = Bcrypt()
+
 
 # USER_DATA = {
 #     "username": "testuser",
@@ -129,6 +132,16 @@ class UserModelTestCase(TestCase):
 
         with self.assertRaises(IntegrityError):
             db.session.commit()
+    
+    # def test_authenticate(self):
+    #     """tests for successful return of a user when given a valid username and password"""
+    #     print(len(self.u1.password))
+
+    #     # response = User.authenticate(self.u1.username, self.u1.password)
+
+    #     self.assertIsInstance(response, User)
+
+
     
 
 
