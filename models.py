@@ -140,7 +140,6 @@ class User(db.Model):
             image_url=image_url,
         )
 
-        db.session.add(user)
         return user
 
     @classmethod

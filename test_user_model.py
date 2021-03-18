@@ -9,6 +9,7 @@ import os
 from unittest import TestCase
 
 from models import db, User, Message, Follows
+from sqlalchemy.exc import IntegrityError
 
 # BEFORE we import our app, let's set an environmental variable
 # to use a different database for tests (we need to do this
@@ -38,6 +39,7 @@ class UserModelTestCase(TestCase):
 
     def setUp(self):
         """Create test client, add sample data."""
+        db.session.rollback()
 
         User.query.delete()
         Message.query.delete()
@@ -97,5 +99,43 @@ class UserModelTestCase(TestCase):
 
         self.assertEqual(self.u2.is_followed_by(self.u1), True)
         self.assertEqual(self.u1.is_followed_by(self.u2), False)
+
+
+    def test_signup(self):
+        """successfully signs a user up"""
+        #def signup(cls, username, email, password, image_url)
+        response = User.signup("user3","user@hotmail.com,","pword", "google.com")
+        db.session.add(response)
+        db.session.commit()
+
+        self.assertIsInstance(response, User)
+        self.assertEqual(len(User.query.all()), 3)
+        self.assertEqual(response, User.query.all()[2])
+    
+    def test_invalid_signup(self):
+        """tests invalid signup data"""
+        bad_response = User.signup("user3",None, "pword", "google.com")
+        
+        db.session.add(bad_response)
+
+        with self.assertRaises(IntegrityError):
+            db.session.commit()
+
+        db.session.rollback()
+
+        bad_response2 = User.signup("testuser1", "user3@gmail.com", "pword", "google.com")
+        
+        db.session.add(bad_response2)
+
+        with self.assertRaises(IntegrityError):
+            db.session.commit()
+    
+
+
+
+
+
+        
+
 
 

@@ -4,6 +4,10 @@ app.py - postresql connection
 TODO:
 -cancel button on edit form
 -figure out cascade thing
+-db.session.rollback() in setUp to remove garbage data from db session 
+-put with self.assertRaises(IntegrityError):
+    lines that would fail in here
+-split up tearDown and setUp, maybe put db.session.rollback() and remove user from db in teardown instead of setup 
 
 
 
