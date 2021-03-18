@@ -30,13 +30,6 @@ from app import app
 db.create_all()
 bcrypt = Bcrypt()
 
-
-# USER_DATA = {
-#     "username": "testuser",
-#     "password": "password",
-#     "email": "user@gmail.com",
-# }
-
 class UserModelTestCase(TestCase):
     """Test views for messages."""
 
@@ -51,12 +44,13 @@ class UserModelTestCase(TestCase):
         u1 = User(
             email="test@test.com",
             username="testuser1",
-            password="HASHED_PASSWORD"
+            password= bcrypt.generate_password_hash('HASHED PASSWORD').decode('UTF-8')
         )
+
         u2 = User(
             email="test@gmail.com",
             username="testuser2",
-            password="HASHED_PASSWORD"
+            password=bcrypt.generate_password_hash('PASSWORD').decode('UTF-8')
         )
 
         db.session.add(u1)
@@ -106,7 +100,6 @@ class UserModelTestCase(TestCase):
 
     def test_signup(self):
         """successfully signs a user up"""
-        #def signup(cls, username, email, password, image_url)
         response = User.signup("user3","user@hotmail.com,","pword", "google.com")
         db.session.add(response)
         db.session.commit()
@@ -133,13 +126,20 @@ class UserModelTestCase(TestCase):
         with self.assertRaises(IntegrityError):
             db.session.commit()
     
-    # def test_authenticate(self):
-    #     """tests for successful return of a user when given a valid username and password"""
-    #     print(len(self.u1.password))
+    def test_authenticate(self):
+        """tests for successful return of a user when given a valid username and password"""
 
-    #     # response = User.authenticate(self.u1.username, self.u1.password)
+        response = User.authenticate(self.u1.username, "HASHED PASSWORD")
 
-    #     self.assertIsInstance(response, User)
+        self.assertIsInstance(response, User)
+      
+        bad_response = User.authenticate(self.u1.username, "WRONG PASSWORD")
+
+        self.assertFalse(bad_response)
+        
+        bad_username = User.authenticate("wrong_username", "HASHED PASSWORD")
+
+        self.assertFalse(bad_username)
 
 
     

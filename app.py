@@ -99,7 +99,7 @@ def login():
     if form.validate_on_submit():
         user = User.authenticate(form.username.data,
                                  form.password.data)
-
+    
         if user:
             do_login(user)
             flash(f"Hello, {user.username}!", "success")
