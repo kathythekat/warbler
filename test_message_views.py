@@ -15,7 +15,7 @@ from models import db, connect_db, Message, User
 # before we import our app, since that will have already
 # connected to the database
 
-os.environ['DATABASE_URL'] = "postgresql:///warbler-test"
+os.environ['DATABASE_URL'] = "postgresql:///warbler_test"
 
 # Now we can import app
 
@@ -43,12 +43,14 @@ class MessageViewTestCase(TestCase):
 
         self.client = app.test_client()
 
-        self.testuser = User.signup(username="testuser",
+        user = User.signup(username="testuser",
                                     email="test@test.com",
                                     password="testuser",
                                     image_url=None)
 
+        db.session.add(user)
         db.session.commit()
+        self.testuser = User.query.all()[0]
 
     def test_add_message(self):
         """Can use add a message?"""
@@ -70,3 +72,17 @@ class MessageViewTestCase(TestCase):
 
             msg = Message.query.one()
             self.assertEqual(msg.text, "Hello")
+
+    def test_delete_message(self):
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser.id
+
+            msg = Message(text="test message", user_id=self.testuser.id)
+            db.session.add(msg)
+            db.session.commit()
+            msg_id = Message.query.one().id
+            resp = c.post(f"/messages/{msg_id}/delete")
+
+            self.assertEqual(resp.status_code, 302)
+            self.assertEqual(len(Message.query.all()), 0)
