@@ -5,7 +5,6 @@ test_user_view.py:
 -bad_signup_test: had to db.session.rollback before querying for user
 
 TODO:
--figure out cascade thing (done!)
 -route cancel button on edit form- currently breaks 
 -in app.py, signup- if duplicate email, should flash email already exists instead of username
 -figure out how to add forms.html to edit.html if possible
@@ -28,11 +27,8 @@ CODE REVIEW THINGS WE LEARNED:
 
 
 Front end:
--show like button on non user tweets
-    -if message.user = g.user
--filled in or empty like icon
-    -g.user.id not in message.users_who_like ids
--
+
+
 
 
 -likes FK constraint failed --> if no cascade on delete when user is deleted
