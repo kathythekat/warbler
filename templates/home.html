@@ -61,15 +61,15 @@
             <div class="message-area">
               <a href="/users/{{ msg.user.id }}">@{{ msg.user.username }}</a>
               <span class="text-muted">{{ msg.timestamp.strftime('%d %B %Y') }}</span>
-              <form action="/messages/{{msg.id}}/likes" method="POST">
-                {% if msg.user.id != g.user.id %}
-                  {% if msg in g.user.liked_messages %}
-                    <button type="submit"><i class="fas fa-heart"></i></button>
-                  {% else %}
-                    <button type="submit"><i class="far fa-heart"></i></button>
-                  {% endif %}
+
+              {% if msg.user.id != g.user.id %}
+                {% if msg in g.user.liked_messages %}
+                  <i class="fas fa-heart" data-msgid={{msg.id}}></i>
+                {% else %}
+                  <i class="far fa-heart" data-msgid={{msg.id}}></i>
                 {% endif %}
-              </form>
+              {% endif %}
+
               <p>{{ msg.text }}</p>
             </div>
           </li>
