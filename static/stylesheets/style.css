@@ -259,6 +259,11 @@ nav + .container {
   position: relative;
 }
 
+.fa-heart {
+  position: absolute;
+  z-index: 1;
+}
+
 #messages .message-link {
   position: absolute;
   top: 0;
@@ -270,7 +275,7 @@ nav + .container {
 
 #messages .list-group-item a:not(.message-link) {
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 
 #messages .list-group-item {
