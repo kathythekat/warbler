@@ -1,0 +1,22 @@
+<li class="stat"> 
+  <p class="small">Messages</p>
+  <h4>
+    <a href="/users/{{ user.id }}">{{ user.messages | length }}</a>
+  </h4>
+</li>
+<li class="stat">
+  <p class="small">Following</p>
+  <h4>
+    <a href="/users/{{ user.id }}/following">{{ user.following | length }}</a>
+  </h4>
+</li>
+<li class="stat">
+  <p class="small">Followers</p>
+  <h4>
+    <a href="/users/{{ user.id }}/followers">{{ user.followers | length }}</a>
+  </h4>
+</li>
+<li class="stat">
+  <p class="small">Likes</p>
+  <h4><a href="/users/{{ user.id }}/likes">{{ user.liked_messages| length }}</a></h4>
+</li>

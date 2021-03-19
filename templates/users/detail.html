@@ -10,28 +10,9 @@
       <div class="row justify-content-end">
         <div class="col-9">
           <ul class="user-stats nav nav-pills">
-            <li class="stat">
-              <p class="small">Messages</p>
-              <h4>
-                <a href="/users/{{ user.id }}">{{ user.messages | length }}</a>
-              </h4>
-            </li>
-            <li class="stat">
-              <p class="small">Following</p>
-              <h4>
-                <a href="/users/{{ user.id }}/following">{{ user.following | length }}</a>
-              </h4>
-            </li>
-            <li class="stat">
-              <p class="small">Followers</p>
-              <h4>
-                <a href="/users/{{ user.id }}/followers">{{ user.followers | length }}</a>
-              </h4>
-            </li>
-            <li class="stat">
-              <p class="small">Likes</p>
-              <h4><a href="/users/{{ user.id }}/likes">{{ user.liked_messages| length }}</a></h4>
-            </li>
+            {% with user = user %}
+              {% include 'stats.html' %}
+            {%endwith%}
             <div class="ml-auto">
               {% if g.user.id == user.id %}
                 <a href="/users/profile" class="btn btn-outline-secondary">Edit Profile</a>

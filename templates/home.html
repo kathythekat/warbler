@@ -15,36 +15,10 @@
             <p>@{{ g.user.username }}</p>
           </a>
           <ul class="user-stats nav nav-pills">
-            <li class="stat">
-              <p class="small">Messages</p>
-              <h4>
-                <a href="/users/{{ g.user.id }}">
-                  {{ g.user.messages | length }}
-                </a>
-              </h4>
-            </li>
-            <li class="stat">
-              <p class="small">Following</p>
-              <h4>
-                <a href="/users/{{ g.user.id }}/following">
-                  {{ g.user.following | length }}
-                </a>
-              </h4>
-            </li>
-            <li class="stat">
-              <p class="small">Followers</p>
-              <h4>
-                <a href="/users/{{ g.user.id }}/followers">
-                  {{ g.user.followers | length }}
-                </a>
-              </h4>
-            </li>
-            <li class="stat">
-              <p class="small">Likes</p>
-              <h4>
-                <a href="/users/{{ g.user.id }}/likes">{{ g.user.liked_messages| length }}</a>
-              </h4>
-            </li>
+            {% with user = g.user %}
+              {% include 'stats.html' %}
+            {%endwith%}
+            
           </ul>
         </div>
       </div>

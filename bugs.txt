@@ -8,6 +8,7 @@ TODO:
 -figure out cascade thing (done!)
 -route cancel button on edit form- currently breaks 
 -in app.py, signup- if duplicate email, should flash email already exists instead of username
+-figure out how to add forms.html to edit.html if possible
 
 TODO ROUTES FOR TESTING:
 -users/follows/follow_id (post)

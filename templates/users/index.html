@@ -8,41 +8,12 @@
         <div class="row">
 
           {% for user in users %}
+            {% with user = user %}
+              {% include 'user_card.html' %}
 
-            <div class="col-lg-4 col-md-6 col-12">
-              <div class="card user-card">
-                <div class="card-inner">
-                  <div class="image-wrapper">
-                    <img src="{{ user.header_image_url }}" alt="" class="card-hero">
-                  </div>
-                  <div class="card-contents">
-                    <a href="/users/{{ user.id }}" class="card-link">
-                      <img
-                          src="{{ user.image_url }}"
-                          alt="Image for {{ user.username }}"
-                          class="card-image">
-                      <p>@{{ user.username }}</p>
-                    </a>
-
-                    {% if g.user %}
-                      {% if g.user.is_following(user) %}
-                        <form method="POST"
-                          action="/users/stop-following/{{ user.id }}">
-                          <button class="btn btn-primary btn-sm">Unfollow</button>
-                        </form>
-                      {% else %}
-                        <form method="POST"
-                              action="/users/follow/{{ user.id }}">
-                          <button class="btn btn-outline-primary btn-sm">Follow</button>
-                        </form>
-                      {% endif %}
-                    {% endif %}
-
-                  </div>
-                  <p class="card-bio">{{user.bio}}</p>
-                </div>
-              </div>
-            </div>
+              {% endwith %}
+      
+          
 
           {% endfor %}
 
