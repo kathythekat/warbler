@@ -1,23 +1,34 @@
-{% extends 'base.html' %}
-{% block content %}
-
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <form method="POST">
-        {{ form.csrf_token }}
-        <div>
-          {% if form.text.errors %}
-            {% for error in form.text.errors %}
-              <span class="text-danger">
-            {{ error }}
-          </span>
-            {% endfor %}
-          {% endif %}
-          {{ form.text(placeholder="What's happening?", class="form-control", rows="3") }}
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Warble Away!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-        <button class="btn btn-outline-success btn-block">Add my message!</button>
-      </form>
+        <div class="modal-body">
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <form method="POST" action="/messages/new">
+                {{ g.form.csrf_token }}
+                <div>
+                  {% if g.form.text.errors %}
+                    {% for error in g.form.text.errors %}
+                      <span class="text-danger">
+                    {{ error }}
+                  </span>
+                    {% endfor %}
+                  {% endif %}
+                  {{ g.form.text(placeholder="What's happening?", class="form-control", rows="3") }}
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
-{% endblock %}

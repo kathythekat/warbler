@@ -56,7 +56,8 @@
             <img src="{{ g.user.image_url }}" alt="{{ g.user.username }}">
           </a>
         </li>
-        <li><a href="/messages/new">New Message</a></li>
+        <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#exampleModalCenter">
+          New Message</button>
         <li><a href="/logout">Log out</a></li>
       {% endif %}
 
@@ -75,7 +76,11 @@
 
 </div>
 
+{% include '/messages/new.html' %}
+
+
 <script src="https://unpkg.com/axios/dist/axios.js"></script>
 <script src="../static/warbler.js"></script>
 </body>
 </html>
+

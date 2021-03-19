@@ -32,6 +32,7 @@ connect_db(app)
 @app.before_request
 def add_user_to_g():
     """If we're logged in, add curr user to Flask global."""
+    g.form = MessageForm()
 
     if CURR_USER_KEY in session:
         g.user = User.query.get(session[CURR_USER_KEY])
@@ -246,7 +247,7 @@ def delete_user():
 ##############################################################################
 # Messages routes:
 
-@app.route('/messages/new', methods=["GET", "POST"])
+@app.route('/messages/new', methods=["POST"])
 def messages_add():
     """Add a message:
 
@@ -266,7 +267,6 @@ def messages_add():
 
         return redirect(f"/users/{g.user.id}")
 
-    return render_template('messages/new.html', form=form)
 
 
 @app.route('/messages/<int:message_id>', methods=["GET"])
@@ -288,7 +288,7 @@ def messages_destroy(message_id):
     if msg.user_id != g.user.id:
         flash("Access unauthorized.", "danger")
         return redirect("/")
-        
+
     db.session.delete(msg)
     db.session.commit()
 
