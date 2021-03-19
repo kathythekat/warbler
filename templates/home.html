@@ -25,30 +25,8 @@
     </aside>
 
     <div class="col-lg-6 col-md-8 col-sm-12">
-      <ul class="list-group" id="messages">
-        {% for msg in messages %}
-          <li class="list-group-item">
-            <a href="/messages/{{ msg.id }}" class="message-link"></a>
-            <a href="/users/{{ msg.user.id }}">
-              <img src="{{ msg.user.image_url }}" alt="" class="timeline-image">
-            </a>
-            <div class="message-area">
-              <a href="/users/{{ msg.user.id }}">@{{ msg.user.username }}</a>
-              <span class="text-muted">{{ msg.timestamp.strftime('%d %B %Y') }}</span>
-
-              {% if msg.user.id != g.user.id %}
-                {% if msg in g.user.liked_messages %}
-                  <i class="fas fa-heart" data-msgid={{msg.id}}></i>
-                {% else %}
-                  <i class="far fa-heart" data-msgid={{msg.id}}></i>
-                {% endif %}
-              {% endif %}
-
-              <p>{{ msg.text }}</p>
-            </div>
-          </li>
-        {% endfor %}
-      </ul>
+      {% from 'cards.html' import message_card %}
+      {{ message_card(messages)}}
     </div>
 
   </div>

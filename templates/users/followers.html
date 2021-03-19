@@ -3,19 +3,8 @@
 {% block user_details %}
   <div class="col-sm-9">
     <div class="row">
-
-      {% for follower in user.followers %}
-       {% with user = follower %}
-
-       <!--include goes in here-->
-       {% include 'user_card.html' %}
-
-       {% endwith %}
-
-       
-
-      {% endfor %}
-
+      {% from 'cards.html' import user_card %}
+      {{user_card(user.followers)}}
     </div>
   </div>
 
