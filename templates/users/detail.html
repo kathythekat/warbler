@@ -12,7 +12,7 @@
           <ul class="user-stats nav nav-pills">
             {% with user = user %}
               {% include 'stats.html' %}
-            {%endwith%}
+            {% endwith %}
             <div class="ml-auto">
               {% if g.user.id == user.id %}
                 <a href="/users/profile" class="btn btn-outline-secondary">Edit Profile</a>

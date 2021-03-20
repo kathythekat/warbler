@@ -3,6 +3,7 @@ import os
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError, PendingRollbackError
+from functools import wraps
 
 from forms import UserAddForm, LoginForm, MessageForm, UserEditForm
 from models import db, connect_db, User, Message, Like
@@ -29,6 +30,14 @@ connect_db(app)
 ##############################################################################
 # User signup/login/logout
 
+def check_authenticated(func):
+    @wraps(func)
+    def wrap(*args, **kwargs):
+        if not g.user:
+            flash("Access unauthorized.", "danger")
+            return redirect("/")
+        return func(*args, **kwargs)
+    return wrap
 
 @app.before_request
 def add_user_to_g():
@@ -149,38 +158,26 @@ def users_show(user_id):
 
     return render_template('users/show.html', user=user)
 
-
 @app.route('/users/<int:user_id>/following')
+@check_authenticated
 def show_following(user_id):
     """Show list of people this user is following."""
-
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
-
     user = User.query.get_or_404(user_id)
     return render_template('users/following.html', user=user)
 
 
 @app.route('/users/<int:user_id>/followers')
+@check_authenticated
 def users_followers(user_id):
     """Show list of followers of this user."""
-
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
-
     user = User.query.get_or_404(user_id)
     return render_template('users/followers.html', user=user)
 
 
 @app.route('/users/follow/<int:follow_id>', methods=['POST'])
+@check_authenticated
 def add_follow(follow_id):
     """Add a follow for the currently-logged-in user."""
-
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
 
     followed_user = User.query.get_or_404(follow_id)
     g.user.following.append(followed_user)
@@ -190,12 +187,9 @@ def add_follow(follow_id):
 
 
 @app.route('/users/stop-following/<int:follow_id>', methods=['POST'])
+@check_authenticated
 def stop_following(follow_id):
     """Have currently-logged-in-user stop following this user."""
-
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
 
     followed_user = User.query.get(follow_id)
     g.user.following.remove(followed_user)
@@ -231,12 +225,9 @@ def profile():
 
 
 @app.route('/users/delete', methods=["POST"])
+@check_authenticated
 def delete_user():
     """Delete user."""
-
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
 
     do_logout()
 
@@ -250,15 +241,12 @@ def delete_user():
 # Messages routes:
 
 @app.route('/messages/new', methods=["POST"])
+@check_authenticated
 def messages_add():
     """Add a message:
 
     Show form if GET. If valid, update message and redirect to user page.
     """
-
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
 
     form = MessageForm()
 
@@ -280,11 +268,9 @@ def messages_show(message_id):
 
 
 @app.route('/messages/<int:message_id>/delete', methods=["POST"])
+@check_authenticated
 def messages_destroy(message_id):
     """Delete a message."""
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
 
     msg = Message.query.get(message_id)
     if msg.user_id != g.user.id:
@@ -297,11 +283,9 @@ def messages_destroy(message_id):
     return redirect(f"/users/{g.user.id}")
 
 @app.route('/messages/<int:message_id>/likes', methods=['POST'])
+@check_authenticated
 def add_liked_message(message_id):
     """ Like a messages """
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
 
     message = Message.query.get(message_id)
 

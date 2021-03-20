@@ -6,17 +6,8 @@
     <div class="row justify-content-end">
       <div class="col-sm-9">
         <div class="row">
-
-          {% for user in users %}
-            {% with user = user %}
-              {% include 'user_card.html' %}
-
-              {% endwith %}
-      
-          
-
-          {% endfor %}
-
+          {% from 'cards.html' import user_card %}
+          {{user_card(users)}}
         </div>
       </div>
     </div>

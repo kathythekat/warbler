@@ -1,0 +1,70 @@
+{% macro message_card(messages) -%}
+<ul class="list-group" id="messages">
+  {% for message in messages %}
+
+  <li class="list-group-item">
+    <a href="/messages/{{ message.id }}" class="message-link"></a>
+
+    <a href="/users/{{ message.user.id }}">
+      <img src="{{ message.user.image_url }}" alt="user image" class="timeline-image">
+    </a>
+
+    <div class="message-area">
+      <a href="/users/{{ message.user.id }}">@{{ message.user.username }}</a>
+      <span class="text-muted">
+        {{ message.timestamp.strftime('%d %B %Y') }}
+      </span>
+      {% if message.user.id != g.user.id %}
+        {% if message in g.user.liked_messages %}
+          <i class="fas fa-heart" data-msgid={{message.id}}></i>
+        {% else %}
+          <i class="far fa-heart" data-msgid={{message.id}}></i>
+        {% endif %}
+      {% endif %}
+      <p>{{ message.text }}</p>
+    </div>
+  </li>
+  {% endfor %}
+
+</ul>
+{%- endmacro %}
+
+{% macro user_card(users) -%}
+{% for user in users %}
+<div class="col-lg-4 col-md-6 col-12">
+  <div class="card user-card">
+    <div class="card-inner">
+      <div class="image-wrapper">
+        <img src="{{ user.header_image_url }}" alt="" class="card-hero">
+      </div>
+
+      <div class="card-contents">
+        <a href="/users/{{ user.id }}" class="card-link">
+          <img
+              src="{{ user.image_url }}"
+              alt="Image for {{ user.username }}"
+              class="card-image">
+          <p>@{{ user.username }}</p>
+        </a>
+        
+    {% if g.user %}
+        {% if g.user.is_following(user) %}
+          <form method="POST"
+                action="/users/stop-following/{{ user.id }}">
+            <button class="btn btn-primary btn-sm">Unfollow</button>
+          </form>
+        {% else %}
+          <form method="POST" action="/users/follow/{{ user.id }}">
+            <button class="btn btn-outline-primary btn-sm">Follow</button>
+          </form>
+        {% endif %}
+    {%endif%}
+
+      </div>
+
+      <p class="card-bio">{{user.bio}}</p>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{%- endmacro %}
